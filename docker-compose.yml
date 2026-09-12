@@ -1,0 +1,17 @@
+services:
+  gateway:
+    build: .
+    ports: ["8080:8080"]
+    environment:
+      DATABASE_URL: postgres://app:app@postgres:5432/app?sslmode=disable
+      PARTNER_URL: http://partner:8090
+    depends_on: [postgres, partner]
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+  partner:
+    image: hashicorp/http-echo:1.0
+    command: ["-listen=:8090", "-text=ok"]
